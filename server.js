@@ -52,7 +52,7 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({extended:false}));
 
 
-// METHOD OVERRIDE MIDDLEWARE
+// METHOD OVERRIDE 
 app.use(methodOverride("_method"));
 
 // express.urlencoded() is a built-in parser method 
@@ -139,6 +139,36 @@ app.delete("/fruits/:indexOfFruitsArray", (req, res) => {
   });
 
 
+//   EDIT ROUTE
+
+app.get("/fruits/:indexOfFruitsArray/edit", (req, res) => {
+    res.render(
+      "edit.liquid", //render views/edit.liquid
+      {
+        //pass in an object that contains
+        fruit: fruits[req.params.indexOfFruitsArray], //the fruit object
+        index: req.params.indexOfFruitsArray, //... and its index in the array
+      }
+    );
+  });
+
+
+// UPDATE ROUTE
+app.put("/fruits/:indexOfFruitsArray/", (req, res) => {
+    //:indexOfFruitsArray is the index of our fruits array that we want to change
+    if (req.body.readyToEat === "on") {
+      //if checked, req.body.readyToEat is set to 'on'
+      req.body.readyToEat = true;
+    } else {
+      //if not checked, req.body.readyToEat is undefined
+      req.body.readyToEat = false;
+    }
+    fruits[req.params.indexOfFruitsArray] = req.body; //in our fruits array, find the index that is specified in the url (:indexOfFruitsArray).  Set that element to the value of req.body (the input data)
+    res.redirect("/fruits"); //redirect to the index page
+  });
+
+
+
 
 // SHOW route for specific fruits
 // req param 'indexOfFruits' points to a specific item in frtuis array
@@ -154,4 +184,4 @@ app.get('/fruits/:indexOfFruits', (req, res) => {
 
 app.listen(port, () => {
     console.log('server running and ready for fruits. port is ', port)
-})
+});

@@ -17,8 +17,12 @@
             {% for fruit in fruits %}
                 <li>
                     <a href="/fruits/{{ forloop.index0 }}">{{fruit.name}}</a>
+                      <!-- option to delete -->
                     <form method="POST" action="/fruits/{{forloop.index0}}?_method=DELETE">
                         <input type="submit" value="DELETE" =/>
+
+                        <!-- option to edit -->
+                        <a href="/fruits/{{forloop.index0}}/edit">Edit</a>
                       </form>
                 </li>
             {% endfor %}
