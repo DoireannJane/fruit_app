@@ -6,6 +6,7 @@
     </head>
     <body>
         <h1>Fruits Index Page</h1>
+    
         <ul>
             <!-- we want to make a list item (li) for every fruit -->
             <!-- we can use our outputs and tags for this -->
@@ -16,9 +17,16 @@
             {% for fruit in fruits %}
                 <li>
                     <a href="/fruits/{{ forloop.index0 }}">{{fruit.name}}</a>
+                    <form method="POST" action="/fruits/{{forloop.index0}}?_method=DELETE">
+                        <input type="submit" value="DELETE" =/>
+                      </form>
                 </li>
             {% endfor %}
         </ul>
+
+        <nav>
+            <a href="/fruits/new">Create a New Fruit</a>
+        </nav>
         <a href="/">Go all the way home</a>
     </body>
 </html>

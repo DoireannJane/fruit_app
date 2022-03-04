@@ -1,5 +1,6 @@
 // we require the express module
 const express = require('express')
+const methodOverride = require("method-override");
 
 // here, we're building our application and referring to it as app
 // here is our app object before liquid
@@ -10,6 +11,12 @@ const app = require('liquid-express-views')(express())
 // save our port to a variable and call it in app.listen
 const port = 3000
 
+// Now that we're utilizing the principles or MVC, we need to import our fruits from models/fruits.js
+const fruits = require('./models/fruits.js')
+
+// MIDDLEWARE INTRO
+
+console.log('these are my fruits', fruits)
 // here we'll design a custom request logger
 // this is a custom piece of what is known as middleware
 // req is the request object, should be passed to reqLog when called
@@ -20,6 +27,36 @@ const reqLog = (req) => {
     console.log('req params are: ', req.params)
     console.log('===========================')
 }
+
+
+// MORE MIDDLEWARE
+
+// Middleware functions are functions that have access to the
+//  request object (req), the response object (res), and the
+//  next middleware function in the application’s 
+// request-response cycle. The next middleware function is 
+// commonly denoted by a variable named next.
+
+// Middleware functions can perform the following tasks:
+// Execute any code.
+// Make changes to the request and the response objects.
+// End the request-response cycle.
+// Call the next middleware function in the stack.
+
+app.use((req, res, next) => {
+    console.log('I run for all routes');
+    next();
+});
+
+//near the top, around other app.use() calls
+app.use(express.urlencoded({extended:false}));
+
+
+// METHOD OVERRIDE MIDDLEWARE
+app.use(methodOverride("_method"));
+
+// express.urlencoded() is a built-in parser method 
+// express to recognize the incoming Request Object as strings or arrays. 
 
 // all of my routes live below my request logger function
 // all route callbacks are going to take in req and res
@@ -50,18 +87,17 @@ const reqLog = (req) => {
 // 	},
 // ]
 
-// Now that we're utilizing the principles or MVC, we need to import our fruits from models/fruits.js
-const fruits = require('./models/fruits.js')
-// viewing our fruits that were exported fruits.js
-console.log('these are my fruits', fruits)
+
 
 // here's our homepage controller
 app.get('/', (req, res) => {
     res.send('<a href="/fruits">Show Me Some Froots</a>')
 })
 
+
 // these routes are our controllers
 // INDEX route for fruits -> shows all fruits
+// viewing our fruits that are in fruits.js
 app.get('/fruits', (req, res) => {
     // calling reqLog, and passing the req object as an argument
     reqLog(req)
@@ -74,6 +110,35 @@ app.get('/fruits', (req, res) => {
     // we render this data in index.liquid
     res.render('index', { fruits: fruits })
 })
+
+// NEW Fruit Route 
+//put this above your show
+app.get('/fruits/new', (req, res) => {
+    res.render('new');
+});
+
+
+// POST route
+app.post('/fruits', (req, res)=>{
+    if(req.body.readyToEat === 'on'){ //if checked, req.body.readyToEat is set to 'on'
+        req.body.readyToEat = true; //do some data correction
+    } else { //if not checked, req.body.readyToEat is undefined
+        req.body.readyToEat = false; //do some data correction
+    }
+    fruits.push(req.body);
+    console.log(fruits);
+    res.redirect('/fruits');
+});
+
+// DELETE ROUTE
+
+app.delete("/fruits/:indexOfFruitsArray", (req, res) => {
+    fruits.splice(req.params.indexOfFruitsArray, 1); //remove the item from the array
+    res.redirect("/fruits"); //redirect back to index route
+    
+  });
+
+
 
 // SHOW route for specific fruits
 // req param 'indexOfFruits' points to a specific item in frtuis array
