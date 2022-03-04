@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>All the fruits</title>
+    </head>
+    <body>
+        <h1>Fruits Index Page</h1>
+        <ul>
+            <!-- we want to make a list item (li) for every fruit -->
+            <!-- we can use our outputs and tags for this -->
+            <!-- a for...in loop says this line -->
+            <!-- for every item in my list of items do a thing -->
+            <!-- the first name in our for...in loop is how we -->
+            <!-- will be referring to each item we iterate over -->
+            {% for fruit in fruits %}
+                <li>
+                    <a href="/fruits/{{ forloop.index0 }}">{{fruit.name}}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="/">Go all the way home</a>
+    </body>
+</html>
